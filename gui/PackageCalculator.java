@@ -9,6 +9,22 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * The PackageCalculator class is the main class for the PackageCalculator application.
+ * It sets up the GUI and initializes all the necessary components.
+ * 
+ * This class follows the Singleton design pattern to ensure that only one instance of the PackageCalculator exists.
+ * 
+ * The GUI is divided into several areas: 
+ *      @see ToolbarArea Represents the toolbar area for accessing various functions.
+ *      @see ExplorerArea Represents the file system explorer area for navigating through files and directories.
+ *      @see CalculatorArea Represents the area for calculating shipping costs based on user input.
+ *      @see InspectorArea Represents the area for inspecting and modifying packaging details.
+ *      @see MessagesArea Represents the area for displaying messages and notifications.
+ *      @see StatusArea Represents the area for displaying the status of the application.
+ * Each area is responsible for a specific functionality in the application.
+ */
+
 public class PackageCalculator extends Application {
 
 	public final static String APPNAME = "PackageCalculator";

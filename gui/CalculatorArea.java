@@ -1,14 +1,16 @@
 package gui;
 
-import control.Calculator;
-import data.Packet;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-
+/**
+ * The CalculatorArea class represents a UI component for calculating shipping costs based on user input.
+ * It contains input fields for length, width, height, and weight,
+ * a label to display the shipping cost, and a button to trigger the calculation.
+ * The calculation is done by a separate Calculator object.
+ *
+ * @see Calculator Used for performing the shipping cost calculation.
+ * @see Packet Used to create a packet object with user-provided dimensions and weight.
+ */
 public class CalculatorArea extends GridPane {
+
 
 	// input fields
 	TextField lengthTextField = new TextField();

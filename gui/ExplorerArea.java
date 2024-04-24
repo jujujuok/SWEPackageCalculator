@@ -14,6 +14,21 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
+
+/**
+ * The ExplorerArea class extends TabPane and represents a GUI component
+ * that allows users to navigate through a file system.
+ * 
+ * It contains a Tab named explorerTab and a TreeView of FileItems,
+ * which represent the files and directories in the file system.
+ *
+ * Each FileItem is a wrapper class for a File object, providing additional functionality
+ * and making it compatible with the TreeView.
+ * 
+ * @see TabPane Provides the base class for tabbed panes.
+ * @see TreeView Represents a control that displays hierarchical data in a tree structure.
+ */
+
 public class ExplorerArea extends TabPane {
 
 	private Tab explorerTab;
