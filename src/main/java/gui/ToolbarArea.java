@@ -10,17 +10,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
-
 /**
- * The ToolbarArea class represents a UI component for creating a toolbar with buttons.
- * It extends the ToolBar class from JavaFX.
- * 
+ * This class represents the ToolbarArea, which extends the ToolBar class from JavaFX.
  * It's used to create a toolbar with buttons for the user to interact with the application.
- * This class can be customized to suit the specific needs of the application.
  * 
- * @see ToolBar Represents a control that displays items in a horizontal or vertical row.
- * @see PackageCalculator The main class of the PackageCalculator application.
+ * @
+ * @
  */
 
 public class ToolbarArea extends ToolBar {

@@ -10,18 +10,17 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
- * The PackageCalculator class is the main class for the PackageCalculator application.
+ * This is the main class for the PackageCalculator application.
  * It sets up the GUI and initializes all the necessary components.
  * 
  * This class follows the Singleton design pattern to ensure that only one instance of the PackageCalculator exists.
  * 
  * The GUI is divided into several areas: 
- *      @see ToolbarArea Represents the toolbar area for accessing various functions.
- *      @see ExplorerArea Represents the file system explorer area for navigating through files and directories.
- *      @see CalculatorArea Represents the area for calculating shipping costs based on user input.
- *      @see InspectorArea Represents the area for inspecting and modifying packaging details.
- *      @see MessagesArea Represents the area for displaying messages and notifications.
- *      @see StatusArea Represents the area for displaying the status of the application.
+ * 		{@link ToolbarArea}
+ * 		{@link CalculatorArea}
+ * 		{@link InspectorArea}
+ * 		{@link MessagesArea}
+ * 		{@link StatusArea}
  * Each area is responsible for a specific functionality in the application.
  */
 
@@ -37,7 +36,6 @@ public class PackageCalculator extends Application {
 	
     // gui areas
 	public ToolbarArea toolbarArea = new ToolbarArea();
-	public ExplorerArea explorerArea = new ExplorerArea();
 	public CalculatorArea editorArea = new CalculatorArea();;
 	public InspectorArea inspectorArea = new InspectorArea();
 	public MessagesArea messagesArea = new MessagesArea();
@@ -51,7 +49,13 @@ public class PackageCalculator extends Application {
 	public Stage getPrimaryStage() {
 		return this.primaryStage;
 	}
-	
+
+
+	/**
+	 * Start the application
+	 *
+	 * @param primaryStage the stage to start the application
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		// remember singleton instance (instantiated by javafx)
@@ -64,22 +68,17 @@ public class PackageCalculator extends Application {
 		SplitPane lr2SplitPane = new SplitPane();
 		lr2SplitPane.getItems().addAll(editorArea, inspectorArea);
 		lr2SplitPane.setDividerPositions(0.8f, 0.2f);
-		
+
 		// tdSplitPane
 		SplitPane tdSplitPane = new SplitPane();
 		tdSplitPane.setOrientation(Orientation.VERTICAL);
 		tdSplitPane.getItems().addAll(lr2SplitPane, messagesArea);
 		tdSplitPane.setDividerPositions(0.9f, 0.1f);
 		
-		// lrSplitPane
-		SplitPane lrSplitPane = new SplitPane();
-		lrSplitPane.getItems().addAll(explorerArea, tdSplitPane);
-		lrSplitPane.setDividerPositions(0.2f, 0.8f);
-		
 		// add all areas
 		BorderPane mainPane = new BorderPane();
 		mainPane.setTop(toolbarArea);
-		mainPane.setCenter(lrSplitPane);
+		mainPane.setCenter(tdSplitPane);
 		mainPane.setBottom(statusArea);
 
 		// show main pane
@@ -94,6 +93,6 @@ public class PackageCalculator extends Application {
 	}
 
 	public static void main(String[] args) {
-		launch(args);
+		Application.launch(args);
 	}
 }
