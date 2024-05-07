@@ -42,10 +42,13 @@ public class ToolbarArea extends ToolBar {
 		Button settingsButton = new Button("Settings");
 		Button aboutButton = new Button("About");
 		Button infoButton = new Button("Info");
+		Button exitButton = new Button("Exit");
+
 		// actionlisteners
 		openProjectButton.setOnAction(e -> ProjectHandling.openProject());
 		newFileButton.setOnAction(e -> ProjectHandling.newFile());
 		infoButton.setOnAction(e -> showInfoDialog());
+		exitButton.setOnAction(e -> System.exit(0));
 		// add all buttons
 		this.getItems().add(openProjectButton);
 		this.getItems().add(newFileButton);
@@ -55,5 +58,6 @@ public class ToolbarArea extends ToolBar {
 		this.getItems().add(settingsButton);
 		this.getItems().add(aboutButton);
 		this.getItems().add(infoButton);
+		this.getItems().add(exitButton);
 	}
 }
