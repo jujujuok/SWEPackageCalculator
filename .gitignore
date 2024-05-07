@@ -1,6 +1,8 @@
 **/build/
 !src/**/build/
 
+bin 
+
 .idea
 
 # Ignore Gradle GUI config
