@@ -1,38 +1,108 @@
 package control;
 
+import data.Company;
 import data.Packet;
+import data.Importer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The {@code Calculator} class calculates shipping costs for parcels based on their dimensions and weight.
+ * Shipping costs can be set for different shipping providers such as DHL or Hermes.
+ * <p>
+ * The class provides methods to initialize shipping costs, set shipping costs based on the chosen provider,
+ * and calculate shipping costs for a given parcel. It also includes an enumeration for representing different
+ * sizes of parcels and a private method to check if a parcel's size is smaller than or equal to a reference packet.
+ * </p>
+ * <p>
+ * The class uses an {@link Importer} to import shipping cost data from a CSV file, and the default shipping costs
+ * are initialized with DHL. The shipping costs can be later set to Hermes using the {@code setShippingCost} method.
+ * </p>
+ * <p>
+ * The class is designed to be used in a shipping cost calculation system, where it provides flexibility in choosing
+ * the shipping provider and calculating costs based on parcel dimensions and weight.
+ * </p>
+ */
+
 
 public class Calculator {
 
-    public double calcShippingCosts(Packet pack) {
-        // Defensive programming: assert that packet dimensions and weight are positive.
-        assert pack.length > 0 : "Length must be positive";
-        assert pack.width > 0 : "Width must be positive";
-        assert pack.height > 0 : "Height must be positive";
-        assert pack.weight > 0 : "Weight must be positive";
+    final Importer importer = new Importer(".\\data\\shippingCosts.csv");
+    private List<Double> shippingCost;
 
-        double shippingCosts = 0.0;
-        int girth = pack.length + (2 * pack.width) + (2 * pack.height); // Calculate the girth (Gurtmaß)
+    //enumerate representing different sizes of parcels
+    private enum PacketSize {
+        VerySmall,
+        Small,
+        Medium,
+        Large,
+        VeryLarge
+    }
 
-        // Applying rules based on the packet size and weight
-        if (pack.length <= 300 && pack.width <= 300 && pack.height <= 150 && pack.weight <= 1000) {
-            shippingCosts = 3.89;
-        } else if (pack.length <= 600 && pack.width <= 300 && pack.height <= 150 && pack.weight <= 2000) {
-            shippingCosts = 4.39;
-        } else if (pack.length <= 1200 && pack.width <= 600 && pack.height <= 600 && girth <= 300) {
-            if (pack.weight <= 5000) {
-                shippingCosts = 5.99;
-            } else if (pack.weight <= 10000) {
-                shippingCosts = 7.99;
-            } else if (pack.weight <= 31500) {
-                shippingCosts = 14.99;
-            } else {
-                assert false : "Package weight exceeds the maximum limit";
-            }
-        } else {
-            assert false : "Package dimensions exceed the maximum limits or invalid";
+    public Calculator(){
+        this.shippingCost = importer.getPriceDHL();
+    }
+
+
+    /**
+     * Sets the shipping costs based on the choice of the shipping provider.
+     *
+     * @param choice The choice of the shipping provider (e.g., "DHL" or "Hermes").
+     */
+    public void setShippingChoice(Company company){
+        switch (company){
+            case HERMES -> this.shippingCost = importer.getPriceHermes();
+            case DHL -> this.shippingCost = importer.getPriceHermes();
+            default -> this.shippingCost = importer.getPriceDHL();
         }
+    }
 
-        return shippingCosts;
+    /**
+     * Calculates the shipping costs for a given parcel.
+     *
+     * @param pack The parcel object with attributes (length, width, height, weight).
+     * @return The calculated shipping costs for the parcel.
+     */
+    public double calcShippingCosts(Packet pack) {
+        // Generate standard packets for comparison
+        Packet smallPacket = new Packet(300, 300, 150, 1000);
+        Packet mediumPacket = new Packet(600, 300, 150, 2000);
+        Packet largePacket = new Packet(1200, 600, 600, 5000);
+        Packet verylargePacket = new Packet(1200, 600, 600, 10000);
+        Packet defaultPacket = new Packet(1200, 600, 600, 31500);
+
+        if (checkPacketSize(pack, smallPacket)) {
+            return shippingCost.get(PacketSize.VerySmall.ordinal());
+        }
+        if (checkPacketSize(pack, mediumPacket)) {
+            return shippingCost.get(PacketSize.Small.ordinal());
+        }
+        if (checkPacketSize(pack, largePacket) && pack.combinedDimensions <= 3000) {
+            return shippingCost.get(PacketSize.Medium.ordinal());
+        }
+        if (checkPacketSize(pack, verylargePacket) && pack.combinedDimensions <= 3000) {
+            return shippingCost.get(PacketSize.Large.ordinal());
+        }
+        if (checkPacketSize(pack, defaultPacket)) {
+            return shippingCost.get(PacketSize.VeryLarge.ordinal());
+        }
+        return 0.0;
+    }
+
+
+    /**
+     * Checks if the original packet size is smaller than or equal to the checking packet size.
+     *
+     * @param originalPacket The original packet to be checked.
+     * @param checkingPacket The packet used for comparison.
+     * @return {@code true} if the original packet size is smaller than or equal
+     * to the checking packet size, otherwise {@code false}.
+     */
+    private boolean checkPacketSize (Packet originalPacket, Packet checkingPacket){
+        return (originalPacket.height <= checkingPacket.height)
+                && (originalPacket.width <= checkingPacket.width)
+                && (originalPacket.length <= checkingPacket.length)
+                && (originalPacket.weight <= checkingPacket.weight);
     }
 }
