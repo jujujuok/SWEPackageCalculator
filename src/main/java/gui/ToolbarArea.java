@@ -1,14 +1,17 @@
 package gui;
 
-import control.ProjectHandling;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 /**
  * The ToolbarArea class represents a UI component for creating a toolbar with buttons.
@@ -32,6 +35,22 @@ public class ToolbarArea extends ToolBar {
         dialog.setScene(dialogScene);
         dialog.show();
 	}
+
+
+	private void openProject(){
+		final DirectoryChooser directoryChooser = new DirectoryChooser();
+		File projectDirectory;
+		projectDirectory = directoryChooser.showDialog(PackageCalculator.getInstance().getPrimaryStage());
+		if (projectDirectory != null) {
+			projectDirectory.getAbsolutePath();
+		}
+	}
+
+	private void newFile(){
+		final FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("New File");
+		//todo new File
+	}
 	
 	public ToolbarArea() {
 		// initialize buttons
@@ -45,8 +64,8 @@ public class ToolbarArea extends ToolBar {
 		Button exitButton = new Button("Exit");
 
 		// actionlisteners
-		openProjectButton.setOnAction(e -> ProjectHandling.openProject());
-		newFileButton.setOnAction(e -> ProjectHandling.newFile());
+		openProjectButton.setOnAction(e -> openProject());
+		newFileButton.setOnAction(e -> newFile());
 		infoButton.setOnAction(e -> showInfoDialog());
 		exitButton.setOnAction(e -> System.exit(0));
 		// add all buttons
