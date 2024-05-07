@@ -1,11 +1,10 @@
 package gui;
 
 import control.Calculator;
+import data.Company;
 import data.Packet;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -19,71 +18,128 @@ import javafx.scene.layout.GridPane;
  */
 
 public class CalculatorArea extends GridPane {
-
-    // input fields
-    TextField lengthTextField = new TextField();
-    TextField widthTextField = new TextField();
-    TextField heightTextField = new TextField();
-    TextField weightTextField = new TextField();
-
-    // output label
-    Label shippingCostLabel = new Label("?");
-
-    // buttons
-    Button calcButton = new Button("Calculate");
-
-    private double calcShippingCosts() {
-        // init
-        Calculator calc = new Calculator();
-
-        // get user input values
-        int length = Integer.parseInt(lengthTextField.getText());
-        int width = Integer.parseInt(widthTextField.getText());
-        int height = Integer.parseInt(heightTextField.getText());
-        int weight = Integer.parseInt(weightTextField.getText());
-
-        // peform calculation
-        Packet packet = new Packet(length, width, height, weight);
-        Double costs = calc.calcShippingCosts(packet);
-
-        // show result
-        shippingCostLabel.setText(costs.toString());
-
-        return costs;
-    }
-
-    // constructor
     public CalculatorArea() {
-
-        // set standard distance between elements
         this.setPadding(new Insets(10, 10, 10, 10));
 
-        // add decription labels
-        this.add(new Label("Length: "), 1, 1);
-        this.add(new Label("Width:  "), 1, 2);
-        this.add(new Label("Height: "), 1, 3);
-        this.add(new Label("Weight: "), 1, 4);
+        // input fields
+        TextField lengthTextField = new TextField();
+        TextField widthTextField = new TextField();
+        TextField heightTextField = new TextField();
+        TextField weightTextField = new TextField();
+
+        // output label
+        Label shippingCostLabel = new Label("?");
+
+        // buttons
+        Button calcButton = new Button("Calculate");
+
+        // shipping Group
+        ToggleGroup shippingGroup  = new ToggleGroup();
+        RadioButton dhlButton = new RadioButton("DHL");
+        dhlButton.setToggleGroup(shippingGroup);
+        dhlButton.setSelected(true);
+        RadioButton hermesButton = new RadioButton("HERMES");
+        hermesButton.setToggleGroup(shippingGroup);
+
+        // destination Group
+        ToggleGroup destinationGroup = new ToggleGroup();
+        RadioButton germanyButton = new RadioButton("Deutschland");
+        germanyButton.setToggleGroup(destinationGroup);
+        RadioButton europeButton = new RadioButton("Europa");
+        europeButton.setToggleGroup(destinationGroup);
+        RadioButton worldButton = new RadioButton("Welt");
+        worldButton.setToggleGroup(destinationGroup);
+
+        // expressversand
+        CheckBox expressCheckBox = new CheckBox("Expressversand");
+
+        // vat
+        CheckBox vatCheckBox = new CheckBox("MwSt abziehen?");
+        vatCheckBox.setSelected(false);
+
+        ToggleGroup vatGroup = new ToggleGroup();
+        RadioButton vat7Button = new RadioButton("7% MwSt");
+        vat7Button.setVisible(false);
+        vat7Button.setSelected(true);
+        vat7Button.setToggleGroup(vatGroup);
+
+        RadioButton vat19Button = new RadioButton("19% MwSt");
+        vat19Button.setToggleGroup(vatGroup);
+        vat19Button.setVisible(false);
+
+        vatCheckBox.setOnAction(ae -> {
+            vat7Button.setVisible(vatCheckBox.isSelected());
+            vat19Button.setVisible(vatCheckBox.isSelected());
+        });
+
+        // add everything to the UI
+        int row = 0;
+
+        this.add(dhlButton, 1, row);
+        this.add(hermesButton, 2, row);
+
+        row = row+1;
+        this.add(germanyButton, 1, row);
+        this.add(europeButton, 2,  row);
+        this.add(worldButton, 3,   row);
+
+        row = row+1;
+        this.add(expressCheckBox, 1, row);
+
+        row = row+1;
+        this.add(vatCheckBox, 1, row);
+        this.add(vat7Button, 2,  row);
+        this.add(vat19Button, 3, row);
+
+        // ROW 4 - packet size
+        row = row+1;
+        this.add(new Label("Length: "), 0, row+1);
+        this.add(new Label("Width:  "), 0, row+2);
+        this.add(new Label("Height: "), 0, row+3);
+        this.add(new Label("Weight: "), 0, row+4);
 
         // add input fields
-        this.add(lengthTextField, 2, 1);
-        this.add(widthTextField, 2, 2);
-        this.add(heightTextField, 2, 3);
-        this.add(weightTextField, 2, 4);
+        this.add(lengthTextField, 1, row+1);
+        this.add(widthTextField,  1, row+2);
+        this.add(heightTextField, 1, row+3);
+        this.add(weightTextField, 1, row+4);
 
         // add labels for units
-        this.add(new Label("mm"), 3, 1);
-        this.add(new Label("mm"), 3, 2);
-        this.add(new Label("mm"), 3, 3);
-        this.add(new Label("g"), 3, 4);
+        this.add(new Label("mm"), 2, row+1);
+        this.add(new Label("mm"), 2, row+2);
+        this.add(new Label("mm"), 2, row+3);
+        this.add(new Label("g"), 2,  row+4);
+
+        row = row+6;
 
         // add shipping cost calculation line
-        this.add(new Label("Shipping Costs: "), 1, 5);
-        this.add(shippingCostLabel, 2, 5);
-        this.add(calcButton, 3, 5);
+        this.add(new Label("Shipping Costs: "), 1, row);
+        this.add(shippingCostLabel, 2, row);
+        this.add(calcButton, 3, row);
 
-        // set action listeners
         calcButton.setOnAction(ae -> {
-            shippingCostLabel.setText(Double.toString(calcShippingCosts()));
+            try {
+                int length = Integer.parseInt(lengthTextField.getText());
+                int width = Integer.parseInt(widthTextField.getText());
+                int height = Integer.parseInt(heightTextField.getText());
+                int weight = Integer.parseInt(weightTextField.getText());
+
+                Calculator calculator = new Calculator();
+
+                Packet packet = new Packet(length, width, height, weight);
+
+                RadioButton selectedShippingButton = (RadioButton) shippingGroup.getSelectedToggle();
+                Company shippingCompany = selectedShippingButton.getText().equals("DHL") ? Company.DHL : Company.HERMES;
+                calculator.setShippingChoice(shippingCompany);
+
+                double costs = calculator.calcShippingCosts(packet);
+
+                shippingCostLabel.setText(Double.toString(costs));
+            } catch (NumberFormatException e) {
+                // Handle non-integer input
+                shippingCostLabel.setText("Invalid input");
+            }
         });
+
     }
 }
