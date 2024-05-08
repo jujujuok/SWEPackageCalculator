@@ -4,14 +4,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.File;
+import javafx.scene.image.*;
 
 /**
  * The ToolbarArea class represents a UI component for creating a toolbar with buttons.
@@ -29,7 +30,7 @@ public class ToolbarArea extends ToolBar {
 		Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         VBox vbox = new VBox(20);
-        Text infoText = new Text("Package Calculator v0.3 \n (c) 2020 I. Bogicevic, J. Buerk");
+        Text infoText = new Text("Package Calculator v0.3 \n (c) 2020 I. Bogicevic, J. Buerk \n Image: https://www.flaticon.com/de/kostenlose-icons/paket");
         vbox.getChildren().add(infoText);
         Scene dialogScene = new Scene(vbox, 400, 250);
         dialog.setScene(dialogScene);
@@ -53,6 +54,12 @@ public class ToolbarArea extends ToolBar {
 	}
 	
 	public ToolbarArea() {
+		Image image = new Image("file:gui/paket.png");
+		ImageView iconView = new ImageView(image);
+		iconView.setFitHeight(20);
+		iconView.setFitWidth(20);
+		this.getItems().add(iconView);
+
 		// initialize buttons
 		Button openProjectButton = new Button("Open Project");
 		Button newFileButton = new Button("New File");
@@ -68,6 +75,7 @@ public class ToolbarArea extends ToolBar {
 		newFileButton.setOnAction(e -> newFile());
 		infoButton.setOnAction(e -> showInfoDialog());
 		exitButton.setOnAction(e -> System.exit(0));
+
 		// add all buttons
 		this.getItems().add(openProjectButton);
 		this.getItems().add(newFileButton);
