@@ -124,6 +124,11 @@ public class CalculatorArea extends GridPane {
                 int height = Integer.parseInt(heightTextField.getText());
                 int weight = Integer.parseInt(weightTextField.getText());
 
+                if (length<0 || width<0 || height<0 || weight<0) {
+                    shippingCostLabel.setText("Please enter a valid number");
+                    return;
+                }
+
                 Calculator calculator = new Calculator();
 
                 Packet packet = new Packet(length, width, height, weight);
@@ -161,7 +166,7 @@ public class CalculatorArea extends GridPane {
                 // calculate
                 double costs = calculator.calcShippingCosts(packet);
 
-                shippingCostLabel.setText(Double.toString(costs));
+                shippingCostLabel.setText("The package price is: " + costs);
             } catch (NumberFormatException e) {
                 // Handle non-integer input
                 shippingCostLabel.setText("Invalid input");
