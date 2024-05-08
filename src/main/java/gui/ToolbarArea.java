@@ -37,22 +37,6 @@ public class ToolbarArea extends ToolBar {
         dialog.show();
 	}
 
-
-	private void openProject(){
-		final DirectoryChooser directoryChooser = new DirectoryChooser();
-		File projectDirectory;
-		projectDirectory = directoryChooser.showDialog(PackageCalculator.getInstance().getPrimaryStage());
-		if (projectDirectory != null) {
-			projectDirectory.getAbsolutePath();
-		}
-	}
-
-	private void newFile(){
-		final FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("New File");
-		//todo new File
-	}
-	
 	public ToolbarArea() {
 		Image image = new Image("file:gui/paket.png");
 		ImageView iconView = new ImageView(image);
@@ -71,8 +55,8 @@ public class ToolbarArea extends ToolBar {
 		Button exitButton = new Button("Exit");
 
 		// actionlisteners
-		openProjectButton.setOnAction(e -> openProject());
-		newFileButton.setOnAction(e -> newFile());
+		// openProjectButton.setOnAction(e -> openProject());
+		// newFileButton.setOnAction(e -> newFile());
 		infoButton.setOnAction(e -> showInfoDialog());
 		exitButton.setOnAction(e -> System.exit(0));
 
