@@ -4,6 +4,7 @@ import data.Utils;
 import data.Packet;
 import data.Importer;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,9 @@ import java.util.List;
 
 public class Calculator {
 
-    final Importer importer = new Importer(".\\data\\shippingCosts.csv");
-    private List<Double> shippingCost;
-    private int vat;
+    final Importer importer = new Importer("data/shippingCosts.csv");
+    private List<Double> shippingCosts;
+    private float vat;
     private boolean express;
     private Utils.Destination destination;
 
@@ -44,7 +45,7 @@ public class Calculator {
     }
 
     public Calculator(){
-        this.shippingCost = importer.getPriceDHL();
+        this.shippingCosts = importer.getPriceDHL();
         this.vat = 0;
         this.express = false;
         this.destination = Utils.Destination.GERMANY;
@@ -58,15 +59,14 @@ public class Calculator {
      */
     public void setShippingChoice(final Utils.Company company){
         switch (company){
-            case HERMES -> this.shippingCost = importer.getPriceHermes();
-            case DHL -> this.shippingCost = importer.getPriceDHL(); //todo duplicate
-            default -> this.shippingCost = importer.getPriceDHL();
+            case HERMES -> this.shippingCosts = importer.getPriceHermes();
+            case DHL -> this.shippingCosts = importer.getPriceDHL();
         }
     }
 
 
     public void setVat(final int vat){
-        this.vat = vat;
+        this.vat = (float) vat /100;
     }
 
     public void setExpress(final boolean express){
@@ -80,33 +80,47 @@ public class Calculator {
     /**
      * Calculates the shipping costs for a given parcel.
      *
-     * @param pack The parcel object with attributes (length, width, height, weight).
+     * @param packet The parcel object with attributes (length, width, height, weight).
      * @return The calculated shipping costs for the parcel.
      */
-    public double calcShippingCosts(Packet pack) {
-        // Generate standard packets for comparison
-        Packet smallPacket = new Packet(300, 300, 150, 1000);
-        Packet mediumPacket = new Packet(600, 300, 150, 2000);
-        Packet largePacket = new Packet(1200, 600, 600, 5000);
-        Packet verylargePacket = new Packet(1200, 600, 600, 10000);
-        Packet defaultPacket = new Packet(1200, 600, 600, 31500);
+    public double calcShippingCosts(Packet packet) {
 
-        if (checkPacketSize(pack, smallPacket)) {
-            return shippingCost.get(PacketSize.VerySmall.ordinal());
+        System.out.println("Calculating shipping costs");
+
+        System.out.println(this.shippingCosts);
+
+        double cost;
+
+        if (packet.length <= 300 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 1000) {
+            cost = shippingCosts.get(0);
+        } else if (packet.length <= 600 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 2000) {
+            cost = shippingCosts.get(1);
+        } else if (packet.length <= 1200 && packet.width <= 600 && packet.height <= 600) {
+            if(packet.combinedDimensions <= 3000 && packet.weight <= 10000) {
+                if (packet.weight <= 5000) {
+                    cost = shippingCosts.get(2);
+                } else {
+                    cost = shippingCosts.get(3);
+                }
+            } else if (packet.weight <= 31500) {
+                cost = shippingCosts.get(4);
+            } else {
+                throw new IllegalArgumentException("Package weight exceeds the maximum limit");
+            }
+        } else {
+            throw new IllegalArgumentException("Package dimensions exceed the maximum limits or invalid");
         }
-        if (checkPacketSize(pack, mediumPacket)) {
-            return shippingCost.get(PacketSize.Small.ordinal());
+
+        // todo destination
+
+        if (this.express){
+            cost = cost *1.2;
         }
-        if (checkPacketSize(pack, largePacket) && pack.combinedDimensions <= 3000) {
-            return shippingCost.get(PacketSize.Medium.ordinal());
-        }
-        if (checkPacketSize(pack, verylargePacket) && pack.combinedDimensions <= 3000) {
-            return shippingCost.get(PacketSize.Large.ordinal());
-        }
-        if (checkPacketSize(pack, defaultPacket)) {
-            return shippingCost.get(PacketSize.VeryLarge.ordinal());
-        }
-        return 0.0;
+        cost = cost * 1-vat;
+
+
+        System.out.println("Shipping cost: " + cost);
+        return cost;
     }
 
 
