@@ -1,6 +1,6 @@
 package control;
 
-import data.Company;
+import data.Utils;
 import data.Packet;
 import data.Importer;
 
@@ -30,6 +30,9 @@ public class Calculator {
 
     final Importer importer = new Importer(".\\data\\shippingCosts.csv");
     private List<Double> shippingCost;
+    private int vat;
+    private boolean express;
+    private Utils.Destination destination;
 
     //enumerate representing different sizes of parcels
     private enum PacketSize {
@@ -42,20 +45,36 @@ public class Calculator {
 
     public Calculator(){
         this.shippingCost = importer.getPriceDHL();
+        this.vat = 0;
+        this.express = false;
+        this.destination = Utils.Destination.GERMANY;
     }
 
 
     /**
      * Sets the shipping costs based on the choice of the shipping provider.
      *
-     * @param choice The choice of the shipping provider (e.g., "DHL" or "Hermes").
+     * @param company The choice of the shipping provider.
      */
-    public void setShippingChoice(Company company){
+    public void setShippingChoice(final Utils.Company company){
         switch (company){
             case HERMES -> this.shippingCost = importer.getPriceHermes();
-            case DHL -> this.shippingCost = importer.getPriceHermes();
+            case DHL -> this.shippingCost = importer.getPriceDHL(); //todo duplicate
             default -> this.shippingCost = importer.getPriceDHL();
         }
+    }
+
+
+    public void setVat(final int vat){
+        this.vat = vat;
+    }
+
+    public void setExpress(final boolean express){
+        this.express = express;
+    }
+
+    public void setDestination(final Utils.Destination destination){
+        this.destination = destination;
     }
 
     /**

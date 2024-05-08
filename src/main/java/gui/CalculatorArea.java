@@ -1,7 +1,7 @@
 package gui;
 
 import control.Calculator;
-import data.Company;
+import data.Utils;
 import data.Packet;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -58,12 +58,12 @@ public class CalculatorArea extends GridPane {
         vatCheckBox.setSelected(false);
 
         ToggleGroup vatGroup = new ToggleGroup();
-        RadioButton vat7Button = new RadioButton("7% MwSt");
+        RadioButton vat7Button = new RadioButton("7%");
         vat7Button.setVisible(false);
         vat7Button.setSelected(true);
         vat7Button.setToggleGroup(vatGroup);
 
-        RadioButton vat19Button = new RadioButton("19% MwSt");
+        RadioButton vat19Button = new RadioButton("19%");
         vat19Button.setToggleGroup(vatGroup);
         vat19Button.setVisible(false);
 
@@ -128,10 +128,37 @@ public class CalculatorArea extends GridPane {
 
                 Packet packet = new Packet(length, width, height, weight);
 
-                RadioButton selectedShippingButton = (RadioButton) shippingGroup.getSelectedToggle();
-                Company shippingCompany = selectedShippingButton.getText().equals("DHL") ? Company.DHL : Company.HERMES;
-                calculator.setShippingChoice(shippingCompany);
+                // vat
+                if (vatCheckBox.isSelected()) {
+                    if (vat7Button.isSelected()) {
+                        calculator.setVat(7);
+                    } else if (vat19Button.isSelected()) {
+                        calculator.setVat(19);
+                    } else {
+                        calculator.setVat(0);
+                    }
+                }
 
+                // express
+                calculator.setExpress(expressCheckBox.isSelected());
+
+                // shipping group
+                if (dhlButton.isSelected()) {
+                    calculator.setShippingChoice(Utils.Company.DHL);
+                }else if (hermesButton.isSelected()) {
+                    calculator.setShippingChoice(Utils.Company.HERMES);
+                }
+
+                // destination
+                if (worldButton.isSelected()) {
+                    calculator.setDestination(Utils.Destination.WORLD);
+                }else if (europeButton.isSelected()) {
+                    calculator.setDestination(Utils.Destination.EU);
+                } else {
+                    calculator.setDestination(Utils.Destination.GERMANY);
+                }
+
+                // calculate
                 double costs = calculator.calcShippingCosts(packet);
 
                 shippingCostLabel.setText(Double.toString(costs));
