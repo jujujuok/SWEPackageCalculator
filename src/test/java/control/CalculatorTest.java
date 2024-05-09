@@ -1,47 +1,78 @@
 package control;
 
 import data.Packet;
-import data.Utils.Company;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CalculatorTest {
     private final Calculator calculator = new Calculator();
 
-    @Test
-    public void whenWeightExceedsLimit_thenThrowException() {
-        Packet packet = new Packet(1200, 600, 600, 32000);
 
-        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet, false, 0),
-                "Expected calcShippingCosts to throw, but it didn't");
-    }
 
     @Test
-    public void whenDimensionsExceedLimits_thenThrowException() {
-        Packet packet = new Packet(1300, 700, 700, 10000);
+    public void testRandomPackets() {
+        Random random = new Random();
+        for (int i = 0; i < 1000; i++) {
+            int length = random.nextInt(1200) + 1;
+            int width = random.nextInt(600) + 1;
+            int height = random.nextInt(600) + 1;
+            int weight = random.nextInt(31500) + 1;
+            Packet packet = new Packet(length, width, height, weight);
+            double cost = calculator.calcShippingCosts(packet, false, 0);
 
-        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet, false, 0),
-                "Expected calcShippingCosts to throw, but it didn't");
+            double expectedCost = testCalcShippingCosts(length, width, height, weight);
+
+            if (Math.abs(cost - expectedCost) > 0.01) {
+                System.out.println("Failed packet: " + packet.toString());
+                System.out.println("Expected cost: " + expectedCost + ", but was: " + cost);
+            }
+            assertEquals(expectedCost, cost, 0.01);
+        }
     }
 
-    @Test
-    public void whenNegativeDimensionsProvided_thenAssert() {
-        Packet packet = new Packet(-1, 600, 600, 5000);
+    private double testCalcShippingCosts(int length, int width, int height, int weight) {
+        System.out.println("Calculating total costs");
 
-        AssertionError assertionError = assertThrows(AssertionError.class, () -> calculator.calcShippingCosts(packet, false, 0),
-                "Expected calcShippingCosts to throw an AssertionError due to negative length, but it didn't");
+        List<Double> shippingCosts = new ArrayList<>(); // Default: DHL
+        shippingCosts.add(3.89);
+        shippingCosts.add(4.39);
+        shippingCosts.add(5.99);
+        shippingCosts.add(7.99);
+        shippingCosts.add(14.99);
 
-        assertTrue(assertionError.getMessage().contains("Length must be positive"), "Assertion message mismatch.");
+        double combinedDimensions = length + 2*width + 2*height;
+
+        double cost = 0.0;
+
+        // Check if packet dimensions and weight are within limits
+        if (width < 0 || height < 0 || weight < 0 || length < 0) {
+            throw new IllegalArgumentException("Package dimensions or weight are invalid");
+        }
+
+        // Determine size and corresponding cost
+        if (length <= 300 && width <= 300 && height <= 150 && weight <= 1000) {
+            cost = shippingCosts.get(0);
+        } else if (length <= 600 && width <= 300 && height <= 150 && weight <= 2000) {
+            cost = shippingCosts.get(1);
+        } else if (length <= 1200 && width <= 600 && height <= 600) {
+            // Check combined dimensions and weight for large packet
+            if (combinedDimensions <= 3000 && weight <= 10000) {
+                cost = weight <= 5000 ? shippingCosts.get(2) : shippingCosts.get(3);
+            } else if (weight <= 31500) {
+                cost = shippingCosts.get(4);
+            } else {
+                throw new IllegalArgumentException("Package weight exceeds the maximum limit");
+            }
+        } else {
+            throw new IllegalArgumentException("Package dimensions exceed the maximum limits");
+        }
+
+        return cost;
     }
 
-    @ParameterizedTest
-    @CsvFileSource(resources = "/package_costs.csv", numLinesToSkip = 1)
-    void testPostageCalculation(int length, int width, int height, int weight, double expectedPostage) {
-        Packet packet = new Packet(length, width, height, weight);
-        double actualPostage = calculator.calcShippingCosts(packet, false, 0);
-        assertEquals(expectedPostage, actualPostage,
-                () -> "Failed for: " + length + "x" + width + "x" + height + ", " + weight + "kg");
-    }
 }

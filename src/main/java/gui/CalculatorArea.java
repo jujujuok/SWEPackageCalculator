@@ -20,8 +20,13 @@ import javafx.scene.layout.GridPane;
  */
 
 public class CalculatorArea extends GridPane {
+
+    private Calculator calculator;
     public CalculatorArea() {
         this.setPadding(new Insets(10, 10, 10, 10));
+
+
+        calculator = new Calculator();
 
         // input fields
         TextField lengthTextField = new TextField();
@@ -138,8 +143,6 @@ public class CalculatorArea extends GridPane {
                     return;
                 }
 
-                Calculator calculator = new Calculator();
-
                 Packet packet = new Packet(length, width, height, weight);
 
                 // vat
@@ -158,13 +161,13 @@ public class CalculatorArea extends GridPane {
 
                 // shipping group
                 if (dhlButton.isSelected()) {
-                    calculator.setShippingChoice(Utils.Company.DHL);
+                    this.calculator.setShippingChoice(Utils.Company.DHL);
                 }else if (hermesButton.isSelected()) {
-                    calculator.setShippingChoice(Utils.Company.HERMES);
+                    this.calculator.setShippingChoice(Utils.Company.HERMES);
                 }
 
                 // calculate
-                double costs = calculator.calcShippingCosts(packet, express, vat);
+                double costs = this.calculator.calcShippingCosts(packet, express, vat);
 
                 shippingCostLabel.setText("The package price is: " + costs);
 

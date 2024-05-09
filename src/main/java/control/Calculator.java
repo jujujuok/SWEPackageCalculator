@@ -3,6 +3,7 @@ package control;
 import data.Utils;
 import data.Packet;
 import data.Importer;
+import gui.PackageCalculator;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -67,16 +68,7 @@ public class Calculator {
      */
     public double calcShippingCosts(final Packet packet, final boolean express, final double vat) {
 
-        System.out.println("Calculating shipping costs");
-
-        System.out.println(this.shippingCosts);
-
-        double cost;
-
-        // calculate the size of the packet
-        if (packet.width <0 || packet.height <0 || packet.weight < 0|| packet.length < 0){
-            throw new IllegalArgumentException("Package weight exceeds the maximum limit");
-        }
+        double cost = 0;
 
         if (isSmall(packet)) {
             cost = shippingCosts.get(0);
@@ -88,11 +80,16 @@ public class Calculator {
                 cost = packet.weight <= 5000 ? shippingCosts.get(2) : shippingCosts.get(3);
             } else if (packet.weight <= 31500) {
                 cost = shippingCosts.get(4);
-            } else {
-                throw new IllegalArgumentException("Package weight exceeds the maximum limit");
+            }
+            else{
+                String error = "Package dimensions exceed the maximum limits or invalid";
+                PackageCalculator.getInstance().messagesArea.setMessage(error);
+                throw new IllegalArgumentException(error);
             }
         } else {
-            throw new IllegalArgumentException("Package dimensions exceed the maximum limits or invalid");
+            String error = "Package dimensions exceed the maximum limits or invalid";
+            PackageCalculator.getInstance().messagesArea.setMessage(error);
+            throw new IllegalArgumentException(error);
         }
 
         if (express){
@@ -100,8 +97,6 @@ public class Calculator {
         }
         cost = cost * 1-vat;
 
-
-        System.out.println("Shipping cost: " + cost);
         return cost;
     }
 

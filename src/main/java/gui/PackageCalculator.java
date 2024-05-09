@@ -80,8 +80,6 @@ public class PackageCalculator extends Application {
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 		Scene scene = new Scene(mainPane, screenBounds.getWidth(), screenBounds.getHeight(), true);
 
-		scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-
 		primaryStage.setTitle(APPNAME);
 		primaryStage.setScene(scene);
 		primaryStage.show();
