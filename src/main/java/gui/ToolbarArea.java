@@ -38,12 +38,6 @@ public class ToolbarArea extends ToolBar {
 	}
 
 	public ToolbarArea() {
-		Image image = new Image("file:gui/paket.png");
-		ImageView iconView = new ImageView(image);
-		iconView.setFitHeight(20);
-		iconView.setFitWidth(20);
-		this.getItems().add(iconView);
-
 		// initialize buttons
 		Button openProjectButton = new Button("Open Project");
 		Button newFileButton = new Button("New File");

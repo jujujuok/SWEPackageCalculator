@@ -5,6 +5,8 @@ import data.Utils;
 import data.Packet;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -75,6 +77,13 @@ public class CalculatorArea extends GridPane {
         // add everything to the UI
         int row = 0;
 
+        Image image = new Image("file:gui/paket.png");
+        ImageView iconView = new ImageView(image);
+        iconView.setFitHeight(20);
+        iconView.setFitWidth(20);
+
+        this.add(iconView, 0,0);
+
         this.add(dhlButton, 1, row);
         this.add(hermesButton, 2, row);
 
@@ -134,18 +143,18 @@ public class CalculatorArea extends GridPane {
                 Packet packet = new Packet(length, width, height, weight);
 
                 // vat
+                double vat = 0;
                 if (vatCheckBox.isSelected()) {
                     if (vat7Button.isSelected()) {
-                        calculator.setVat(7);
+                        vat = 0.07;
                     } else if (vat19Button.isSelected()) {
-                        calculator.setVat(19);
+                        vat = 0.19;
                     } else {
-                        calculator.setVat(0);
+                        vat = 0.0;
                     }
                 }
 
-                // express
-                calculator.setExpress(expressCheckBox.isSelected());
+                boolean express = expressCheckBox.isSelected();
 
                 // shipping group
                 if (dhlButton.isSelected()) {
@@ -154,19 +163,11 @@ public class CalculatorArea extends GridPane {
                     calculator.setShippingChoice(Utils.Company.HERMES);
                 }
 
-                // destination
-                if (worldButton.isSelected()) {
-                    calculator.setDestination(Utils.Destination.WORLD);
-                }else if (europeButton.isSelected()) {
-                    calculator.setDestination(Utils.Destination.EU);
-                } else {
-                    calculator.setDestination(Utils.Destination.GERMANY);
-                }
-
                 // calculate
-                double costs = calculator.calcShippingCosts(packet);
+                double costs = calculator.calcShippingCosts(packet, express, vat);
 
                 shippingCostLabel.setText("The package price is: " + costs);
+
             } catch (NumberFormatException e) {
                 // Handle non-integer input
                 shippingCostLabel.setText("Invalid input");

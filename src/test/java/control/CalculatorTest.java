@@ -14,7 +14,7 @@ public class CalculatorTest {
     public void whenWeightExceedsLimit_thenThrowException() {
         Packet packet = new Packet(1200, 600, 600, 32000);
 
-        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet),
+        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet, false, 0),
                 "Expected calcShippingCosts to throw, but it didn't");
     }
 
@@ -22,7 +22,7 @@ public class CalculatorTest {
     public void whenDimensionsExceedLimits_thenThrowException() {
         Packet packet = new Packet(1300, 700, 700, 10000);
 
-        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet),
+        assertThrows(IllegalArgumentException.class, () -> calculator.calcShippingCosts(packet, false, 0),
                 "Expected calcShippingCosts to throw, but it didn't");
     }
 
@@ -30,7 +30,7 @@ public class CalculatorTest {
     public void whenNegativeDimensionsProvided_thenAssert() {
         Packet packet = new Packet(-1, 600, 600, 5000);
 
-        AssertionError assertionError = assertThrows(AssertionError.class, () -> calculator.calcShippingCosts(packet),
+        AssertionError assertionError = assertThrows(AssertionError.class, () -> calculator.calcShippingCosts(packet, false, 0),
                 "Expected calcShippingCosts to throw an AssertionError due to negative length, but it didn't");
 
         assertTrue(assertionError.getMessage().contains("Length must be positive"), "Assertion message mismatch.");
@@ -40,7 +40,7 @@ public class CalculatorTest {
     @CsvFileSource(resources = "/package_costs.csv", numLinesToSkip = 1)
     void testPostageCalculation(int length, int width, int height, int weight, double expectedPostage) {
         Packet packet = new Packet(length, width, height, weight);
-        double actualPostage = calculator.calcShippingCosts(packet);
+        double actualPostage = calculator.calcShippingCosts(packet, false, 0);
         assertEquals(expectedPostage, actualPostage,
                 () -> "Failed for: " + length + "x" + width + "x" + height + ", " + weight + "kg");
     }

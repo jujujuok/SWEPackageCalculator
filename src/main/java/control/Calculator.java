@@ -31,26 +31,10 @@ public class Calculator {
 
     final Importer importer = new Importer("data/shippingCosts.csv");
     private List<Double> shippingCosts;
-    private float vat;
-    private boolean express;
-    private Utils.Destination destination;
-
-    //enumerate representing different sizes of parcels
-    private enum PacketSize {
-        VerySmall,
-        Small,
-        Medium,
-        Large,
-        VeryLarge
-    }
 
     public Calculator(){
         this.shippingCosts = importer.getPriceDHL();
-        this.vat = 0;
-        this.express = false;
-        this.destination = Utils.Destination.GERMANY;
     }
-
 
     /**
      * Sets the shipping costs based on the choice of the shipping provider.
@@ -64,26 +48,15 @@ public class Calculator {
         }
     }
 
-
-    public void setVat(final int vat){
-        this.vat = (float) vat /100;
-    }
-
-    public void setExpress(final boolean express){
-        this.express = express;
-    }
-
-    public void setDestination(final Utils.Destination destination){
-        this.destination = destination;
-    }
-
     /**
      * Calculates the shipping costs for a given parcel.
      *
      * @param packet The parcel object with attributes (length, width, height, weight).
+     * @param vat todo
+     * @param express boolean
      * @return The calculated shipping costs for the parcel.
      */
-    public double calcShippingCosts(Packet packet) {
+    public double calcShippingCosts(final Packet packet, final boolean express, final double vat) {
 
         System.out.println("Calculating shipping costs");
 
@@ -91,11 +64,12 @@ public class Calculator {
 
         double cost;
 
-        if (packet.length <= 300 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 1000) {
+        // calculate the size of the packet
+        if (isSmall(packet)) {
             cost = shippingCosts.get(0);
-        } else if (packet.length <= 600 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 2000) {
+        } else if (isMedium(packet)) {
             cost = shippingCosts.get(1);
-        } else if (packet.length <= 1200 && packet.width <= 600 && packet.height <= 600) {
+        } else if (isLarge(packet)) {
             if(packet.combinedDimensions <= 3000 && packet.weight <= 10000) {
                 if (packet.weight <= 5000) {
                     cost = shippingCosts.get(2);
@@ -113,7 +87,7 @@ public class Calculator {
 
         // todo destination
 
-        if (this.express){
+        if (express){
             cost = cost *1.2;
         }
         cost = cost * 1-vat;
@@ -123,19 +97,15 @@ public class Calculator {
         return cost;
     }
 
+    private boolean isSmall(Packet packet){
+        return packet.length <= 300 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 1000;
+    }
 
-    /**
-     * Checks if the original packet size is smaller than or equal to the checking packet size.
-     *
-     * @param originalPacket The original packet to be checked.
-     * @param checkingPacket The packet used for comparison.
-     * @return {@code true} if the original packet size is smaller than or equal
-     * to the checking packet size, otherwise {@code false}.
-     */
-    private boolean checkPacketSize (Packet originalPacket, Packet checkingPacket){
-        return (originalPacket.height <= checkingPacket.height)
-                && (originalPacket.width <= checkingPacket.width)
-                && (originalPacket.length <= checkingPacket.length)
-                && (originalPacket.weight <= checkingPacket.weight);
+    private boolean isMedium(Packet packet){
+        return packet.length <= 600 && packet.width <= 300 && packet.height <= 150 && packet.weight <= 2000;
+    }
+
+    private boolean isLarge(Packet packet){
+        return packet.length <= 1200 && packet.width <= 600 && packet.height <= 600;
     }
 }
