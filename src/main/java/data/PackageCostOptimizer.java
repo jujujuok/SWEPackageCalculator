@@ -2,7 +2,9 @@ package data;
 
 import control.Calculator;
 import gui.PackageCalculator;
-import org.apache.commons.math3.*;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,9 @@ public class PackageCostOptimizer {
                     double costs = calculator.calcShippingCosts(new Packet(
                             (int) (Math.ceil(dimensions.get(0))),
                             (int) (Math.ceil(dimensions.get(1))),
-                            (int) (Math.ceil(dimensions.get(2))), weight)
+                            (int) (Math.ceil(dimensions.get(2))), weight),
+                            false,
+                            0
                     );
                     if (costs < minCosts) {
                         minCosts = costs;
