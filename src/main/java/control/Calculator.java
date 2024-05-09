@@ -2,11 +2,9 @@ package control;
 
 import data.Utils;
 import data.Packet;
-import data.Importer;
+import data.ImportHandler;
 import gui.PackageCalculator;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +16,7 @@ import java.util.List;
  * sizes of parcels and a private method to check if a parcel's size is smaller than or equal to a reference packet.
  * </p>
  * <p>
- * The class uses an {@link Importer} to import shipping cost data from a CSV file, and the default shipping costs
+ * The class uses an {@link ImportHandler} to import shipping cost data from a CSV file, and the default shipping costs
  * are initialized with DHL. The shipping costs can be later set to Hermes using the {@code setShippingCost} method.
  * </p>
  * <p>
@@ -30,7 +28,7 @@ import java.util.List;
 
 public class Calculator {
 
-    final Importer importer = new Importer("data/shippingCosts.csv");
+    final ImportHandler importer = new ImportHandler("data/shippingCosts.csv");
 
     /**
      * shippingCosts is an ArrayList with the prices:

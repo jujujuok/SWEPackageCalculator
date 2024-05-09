@@ -12,8 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CalculatorTest {
     private final Calculator calculator = new Calculator();
 
-
-
     @Test
     public void testRandomPackets() {
         Random random = new Random();
@@ -36,7 +34,6 @@ public class CalculatorTest {
     }
 
     private double testCalcShippingCosts(int length, int width, int height, int weight) {
-        System.out.println("Calculating total costs");
 
         List<Double> shippingCosts = new ArrayList<>(); // Default: DHL
         shippingCosts.add(3.89);

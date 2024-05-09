@@ -4,13 +4,13 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Importer {
+public class ImportHandler {
 
     private final String path;
     private final List<Double> dhlPrices;
     private final List<Double> hermesPrices;
 
-    public Importer(String path){
+    public ImportHandler(String path){
         this.path = System.getProperty("user.dir") + "/src/main/java/"+path;
         this.dhlPrices = new ArrayList<>();
         this.hermesPrices = new ArrayList<>();

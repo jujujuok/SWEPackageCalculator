@@ -28,19 +28,22 @@ public class Packet {
 		// calculate the size of the packet
 		if (width <0 || height <0 || weight < 0|| length < 0){
 			String error = "Dimensions must be greater than 0.";
-			PackageCalculator.getInstance().messagesArea.setMessage(error);
+			if (PackageCalculator.getInstance() != null)
+				PackageCalculator.getInstance().messagesArea.setMessage(error);
 			throw new AssertionError(error);
 		}
 
 		if (weight > 31500){
 			String error = "Weight must be less than 31500.";
-			PackageCalculator.getInstance().messagesArea.setMessage(error);
+			if (PackageCalculator.getInstance() != null)
+				PackageCalculator.getInstance().messagesArea.setMessage(error);
 			throw new AssertionError(error);
 		}
 
 		if (length > 1200 || width > 600 || height > 600){
 			String error = "Wrong dimensions";
-			PackageCalculator.getInstance().messagesArea.setMessage(error);
+			if (PackageCalculator.getInstance() != null)
+				PackageCalculator.getInstance().messagesArea.setMessage(error);
 			throw new AssertionError(error);
 		}
 

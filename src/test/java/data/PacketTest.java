@@ -3,7 +3,6 @@ package data;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PacketTest {
 
@@ -12,8 +11,7 @@ public class PacketTest {
         assertThrows(AssertionError.class, () ->
                         new Packet(-1, 600, 600, 500),
                 "Expected calcShippingCosts to throw an AssertionError due to negative length, but it didn't");
-
-}
+    }
 
     @Test
     public void whenDimensionsExceedLimits_thenThrowException() {
