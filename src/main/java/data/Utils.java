@@ -12,5 +12,13 @@ public class Utils {
         GERMANY,
         EU
     }
+
+    private enum PacketSize {
+        VerySmall,
+        Small,
+        Medium,
+        Large,
+        VeryLarge
+    }
 }
 

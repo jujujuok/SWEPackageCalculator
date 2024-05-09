@@ -30,6 +30,15 @@ import java.util.List;
 public class Calculator {
 
     final Importer importer = new Importer("data/shippingCosts.csv");
+
+    /**
+     * shippingCosts is an ArrayList with the prices:
+     * 0: small
+     * 1: medium
+     * 2: large
+     * 3: large from 5kg
+     * 4: large up to 31.5kg
+     * */
     private List<Double> shippingCosts;
 
     public Calculator(){
@@ -65,17 +74,18 @@ public class Calculator {
         double cost;
 
         // calculate the size of the packet
+        if (packet.width <0 || packet.height <0 || packet.weight < 0|| packet.length < 0){
+            throw new IllegalArgumentException("Package weight exceeds the maximum limit");
+        }
+
         if (isSmall(packet)) {
             cost = shippingCosts.get(0);
         } else if (isMedium(packet)) {
             cost = shippingCosts.get(1);
         } else if (isLarge(packet)) {
+            // check for combinedDimensions and weight for the price
             if(packet.combinedDimensions <= 3000 && packet.weight <= 10000) {
-                if (packet.weight <= 5000) {
-                    cost = shippingCosts.get(2);
-                } else {
-                    cost = shippingCosts.get(3);
-                }
+                cost = packet.weight <= 5000 ? shippingCosts.get(2) : shippingCosts.get(3);
             } else if (packet.weight <= 31500) {
                 cost = shippingCosts.get(4);
             } else {
@@ -84,8 +94,6 @@ public class Calculator {
         } else {
             throw new IllegalArgumentException("Package dimensions exceed the maximum limits or invalid");
         }
-
-        // todo destination
 
         if (express){
             cost = cost *1.2;
