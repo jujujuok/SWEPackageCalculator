@@ -9,6 +9,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This function calculates if possible a rotation, so that a package fits into another package
+ * */
 public class PackageCostOptimizer {
 
     private final Vector3D xAxis = new Vector3D(1, 0, 0);
